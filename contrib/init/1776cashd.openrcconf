@@ -1,0 +1,33 @@
+# /etc/conf.d/1776cashd: config file for /etc/init.d/1776cashd
+
+# Config file location
+#BITCOIND_CONFIGFILE="/etc/1776cash/1776CASH.conf"
+
+# What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
+#BITCOIND_PIDDIR="/var/run/1776cashd"
+
+# What filename to give the pidfile
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/1776cashd.pid"
+
+# Where to write 1776cashd data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/1776cashd"
+
+# User and group to own 1776cashd process
+#BITCOIND_USER="1776cash"
+#BITCOIND_GROUP="1776cash"
+
+# Path to 1776cashd executable
+#BITCOIND_BIN="/usr/bin/1776cashd"
+
+# Nice value to run 1776cashd under
+#BITCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#BITCOIND_OPTS=""
+
+# The timeout in seconds OpenRC will wait for bitcoind to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+BITCOIND_SIGTERM_TIMEOUT=60
