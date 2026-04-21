@@ -1640,6 +1640,29 @@ bool AppInitMain()
                         break;
                     }
                     assert(chainActive.Tip() != nullptr);
+
+                    // Auto-recovery: if the active tip is followed by an invalid block and we are
+                    // still in initial sync, we are likely stuck because of an old IsBlockValueValid
+                    // bug that incorrectly rejected valid blocks during IBD. Trigger an automatic
+                    // reindex so users don't have to manually intervene.
+                    if (Params().NetworkIDString() == CBaseChainParams::MAIN) {
+                        const CBlockIndex* pindexTip = chainActive.Tip();
+                        bool fHasInvalidChild = false;
+                        auto range = mapPrevBlockIndex.equal_range(pindexTip->GetBlockHash());
+                        for (auto it = range.first; it != range.second; ++it) {
+                            if (it->second->nStatus & BLOCK_FAILED_VALID) {
+                                fHasInvalidChild = true;
+                                break;
+                            }
+                        }
+                        if (fHasInvalidChild && IsInitialBlockDownload()) {
+                            LogPrintf("ERROR: Active chain tip (height %d) is followed by an invalid block during initial sync. "
+                                      "This is likely caused by a previous sync bug. Reindexing automatically.\n",
+                                      pindexTip->nHeight);
+                            strLoadError = _("Block database contains an invalid block after the current tip, likely from an old sync bug. Rebuilding...");
+                            break;
+                        }
+                    }
                 }
 
                 if (Params().NetworkIDString() == CBaseChainParams::MAIN) {
@@ -1693,24 +1716,26 @@ bool AppInitMain()
         } while (false);
 
         if (!fLoaded && !ShutdownRequested()) {
-            // first suggest a reindex
             if (!fReset) {
-                if (gArgs.GetBoolArg("-daemon", false)) {
-                    LogPrintf("Error loading block database: %s. Please restart with -reindex to rebuild.\n", strLoadError);
-                    return UIError(strLoadError + ". " + _("Please restart with -reindex to rebuild the block database."));
-                }
-                // GUI/foreground: automatically attempt a one-time rebuild so users don't have to
-                // manually restart with -reindex. If it fails, a clear error will be shown below.
+                // Automatically attempt a one-time rebuild (daemon and GUI) so users
+                // don't have to manually restart with -reindex for recoverable states.
                 if (!fAutoReindexTried) {
-                    uiInterface.ThreadSafeMessageBox(
-                        strLoadError + ".\n\n" +
-                            _("The wallet will now rebuild the block database. This can take a while."),
-                        "", CClientUIInterface::MSG_ERROR);
+                    if (gArgs.GetBoolArg("-daemon", false)) {
+                        LogPrintf("Error loading block database: %s. Reindexing automatically.\n", strLoadError);
+                    } else {
+                        uiInterface.ThreadSafeMessageBox(
+                            strLoadError + ".\n\n" +
+                                _("The wallet will now rebuild the block database. This can take a while."),
+                            "", CClientUIInterface::MSG_ERROR);
+                    }
                     fReindex = true;
                     fAutoReindexTried = true;
                     AbortShutdown();
                 } else {
-                    return UIError(strLoadError);
+                    if (gArgs.GetBoolArg("-daemon", false)) {
+                        LogPrintf("Error loading block database: %s. Please restart with -reindex to rebuild.\n", strLoadError);
+                    }
+                    return UIError(strLoadError + ". " + _("Please restart with -reindex to rebuild the block database."));
                 }
             } else {
                 return UIError(strLoadError + ".\n\n" +

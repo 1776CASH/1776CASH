@@ -1273,7 +1273,8 @@ bool static AlreadyHave(const CInv& inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
     }
 
     case MSG_BLOCK:
-        return LookupBlockIndex(inv.hash) != nullptr;
+        if (LookupBlockIndex(inv.hash) != nullptr) return true;
+        return mapRejectedBlocks.count(inv.hash);
     case MSG_TXLOCK_REQUEST:
         // deprecated
         return true;

@@ -2819,7 +2819,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
     if (pindexPrev != nullptr && block.hashPrevBlock != UINT256_ZERO) {
         if (pindexPrev->GetBlockHash() != block.hashPrevBlock) {
             //out of order
-            CBlockIndex* pindexPrev = LookupBlockIndex(block.hashPrevBlock);
+            pindexPrev = LookupBlockIndex(block.hashPrevBlock);
             if (!pindexPrev) {
                 return state.Error("blk-out-of-order");
             }
@@ -3466,15 +3466,12 @@ bool ProcessNewBlock(const std::shared_ptr<const CBlock>& pblock, const FlatFile
     int64_t nStartTime = GetTimeMillis();
     int newHeight = 0;
     
-    // Use a flag to track if we successfully acquired cs_main
-    bool lockAcquired = false;
     try {
         // Track time taken for each phase
         int64_t nLockTime = GetTimeMillis();
 
         // CheckBlock requires cs_main lock
         LOCK(cs_main);
-        lockAcquired = true;
         nLockTime = GetTimeMillis() - nLockTime;
         
         if (nLockTime > 500) {
@@ -3512,7 +3509,7 @@ bool ProcessNewBlock(const std::shared_ptr<const CBlock>& pblock, const FlatFile
     nActivateEndTime = GetTime();
     
     // Check total processing time
-    int64_t nTotalTime = GetTime() - nStartTime / 1000; // Convert ms to seconds
+    int64_t nTotalTime = (GetTimeMillis() - nStartTime) / 1000; // Convert ms to seconds
     if (nTotalTime > 10) {
         LogPrintf("%s: WARNING: Block %s took %ld seconds to process\n", __func__, pblock->GetHash().ToString(), nTotalTime);
         
