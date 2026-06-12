@@ -171,17 +171,13 @@ static Consensus::LLMQParams llmq400_85 = {
  * + Contains no strange transactions
  */
 static MapCheckpoints mapCheckpoints = {
-    {0, uint256S("0x0000093a1e4b781ec178e20184ad7301b4bc1840abdabebf19e9005a245eab7c")},
-    {5000, uint256S("0x0000000295c2d3c16a7cc57c39ac5b59a5c7795b429442b3db0683d2d0c9d36b")},
-    {10000, uint256S("0x00000000ecfe13990b4587e0c48fa3f4cde0777c11ae78485f611d01e7aec5be")},
-    {15000, uint256S("0xf682476fb495c0422145e6356cf7042db35c0ab050ce196c50e77145aafad83b")},
-    {20000, uint256S("0x9aa4dc41163df2984782cac7654f2de70c265fd1040a7af0b08be4b1fc6b11c7")},
+    {0, uint256S("0x000008eda97dd1a0281134beca3ecdd04406006b8fa6222b2d1040b6c4abde6b")},
 };
 
 static const CCheckpointData data = {
     &mapCheckpoints,
-    1776176550, // * UNIX timestamp of last checkpoint block (20000)
-    34251,      // * total number of transactions between genesis and last checkpoint
+    1780925434, // * UNIX timestamp of last checkpoint block (genesis)
+    0,          // * total number of transactions between genesis and last checkpoint
     1800        // * estimated number of transactions per day after checkpoint
 };
 
@@ -215,10 +211,10 @@ public:
     {
         strNetworkID = "main";
 
-        genesis = Create1776CashGenesisBlock("1776CASH Genesis 2026-03-16", 1773619200, 747536, 0x1e0ffff0, 1, 0 * COIN);
+        genesis = Create1776CashGenesisBlock("1776CASH Genesis 2026-06-08", 1780925434, 1042315, 0x1e0ffff0, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000093a1e4b781ec178e20184ad7301b4bc1840abdabebf19e9005a245eab7c"));
-        assert(genesis.hashMerkleRoot == uint256S("0x2cfa18aa600b00d6bcd32c5f94b1120bd8d68357ce74f8f99e23a3bd156884fb"));
+        assert(consensus.hashGenesisBlock == uint256S("0x000008eda97dd1a0281134beca3ecdd04406006b8fa6222b2d1040b6c4abde6b"));
+        assert(genesis.hashMerkleRoot == uint256S("0x1490cb17a58d8b72d87d6e143bd47a49235669f109e2067afd6863954d9f18e8"));
 
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
@@ -249,10 +245,10 @@ public:
         consensus.nMaxProposalPayments = GOVERNANCE_MAX_CYCLE_PAYMENTS;
 
         // spork keys
-        consensus.strSporkPubKey = "04940746698f987968da312a7e15d861c14c08a85c6c2675fb0f692903d98aa8bb403869173cbdd8766a107f5c3493f46d50163cb195ac98288c7f483730eb51e9";
-        consensus.strSporkPubKeyOld = "040F129DE6546FE405995329A887329BED4321325B1A73B0A257423C05C1FCFE9E40EF0678AEF59036A22C42E61DFD29DF7EFB09F56CC73CADF64E05741880E3E7";
-        consensus.nTime_EnforceNewSporkKey = 1608512400;    //!> December 21, 2020 01:00:00 AM GMT
-        consensus.nTime_RejectOldSporkKey = 1614560400;     //!> March 1, 2021 01:00:00 AM GMT
+        consensus.strSporkPubKey = "048ac5e30b084e292ca202402449eb475a5c964a2b588cf69a7609ae4900b0c755daf8091cda0dc2d8ac7a3cd2d703f0c1bde6fc81f77a8fae491afe6f214fa869";
+        consensus.strSporkPubKeyOld = "";
+        consensus.nTime_EnforceNewSporkKey = 0;
+        consensus.nTime_RejectOldSporkKey = 0;
 
         // height-based activations
         consensus.height_last_invalid_UTXO = 894538;
@@ -303,10 +299,10 @@ public:
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
          * a large 4-byte int at any alignment.
          */
-        pchMessageStart[0] = 0xb4;
-        pchMessageStart[1] = 0x17;
-        pchMessageStart[2] = 0x76;
-        pchMessageStart[3] = 0xca;
+        pchMessageStart[0] = 0xd1;
+        pchMessageStart[1] = 0x4f;
+        pchMessageStart[2] = 0x82;
+        pchMessageStart[3] = 0x3a;
         nDefaultPort = 17776;
 
         // Seed nodes (bootstrap). Keep this list small and reliable.
@@ -319,13 +315,13 @@ public:
         vSeeds.emplace_back("89.167.55.37");
         vSeeds.emplace_back("5.78.154.213");
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 38);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 25);
-        base58Prefixes[STAKING_ADDRESS] = std::vector<unsigned char>(1, 57);
-        base58Prefixes[EXCHANGE_ADDRESS] = {0x02, 0x17, 0x76};
-        base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 184);
-        base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x17, 0x76, 0xCA};
-        base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x17, 0x76, 0xCB};
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 30);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 16);
+        base58Prefixes[STAKING_ADDRESS] = std::vector<unsigned char>(1, 28);
+        base58Prefixes[EXCHANGE_ADDRESS] = {0x02, 0x17, 0x77};
+        base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 158);
+        base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
+        base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
         // BIP44 coin type is from https://github.com/satoshilabs/slips/blob/master/slip-0044.md
         base58Prefixes[EXT_COIN_TYPE] = {0x80, 0x00, 0x06, 0xF0}; // 1776
 
@@ -342,14 +338,14 @@ public:
         fRequireStandard = true;
 
         // Sapling
-        bech32HRPs[SAPLING_PAYMENT_ADDRESS]      = "c7";
-        bech32HRPs[SAPLING_FULL_VIEWING_KEY]     = "c1776views";
-        bech32HRPs[SAPLING_INCOMING_VIEWING_KEY] = "c1776ivks";
-        bech32HRPs[SAPLING_EXTENDED_SPEND_KEY]   = "c1776-secret-spending-key-main";
-        bech32HRPs[SAPLING_EXTENDED_FVK]         = "c1776xviews";
+        bech32HRPs[SAPLING_PAYMENT_ADDRESS]      = "c8";
+        bech32HRPs[SAPLING_FULL_VIEWING_KEY]     = "c1776v2views";
+        bech32HRPs[SAPLING_INCOMING_VIEWING_KEY] = "c1776v2ivks";
+        bech32HRPs[SAPLING_EXTENDED_SPEND_KEY]   = "c1776-secret-spending-key-v2";
+        bech32HRPs[SAPLING_EXTENDED_FVK]         = "c1776v2xviews";
 
-        bech32HRPs[BLS_SECRET_KEY]               = "c1776-bls-sk";
-        bech32HRPs[BLS_PUBLIC_KEY]               = "c1776-bls-pk";
+        bech32HRPs[BLS_SECRET_KEY]               = "c1776v2-bls-sk";
+        bech32HRPs[BLS_PUBLIC_KEY]               = "c1776v2-bls-pk";
 
         // long living quorum params
         consensus.llmqs[Consensus::LLMQ_50_60] = llmq50_60;
